@@ -7,33 +7,28 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.model.ArrayDataModel;
 import javax.faces.model.DataModel;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @ManagedBean
-@SessionScoped
-public class SampleBean {
+@RequestScoped
+public class SampleBean implements Serializable {
 
     private static List<Student> list = new ArrayList<>();
-    private Student item;
-    private boolean edit;
-    private Student itemBeforeEditing;
+    private static Student item = new Student();
+    private static boolean edit;
+    private static Student itemBeforeEditing = null;
 
-    @PostConstruct
-    public void init() {
-        item = new Student();
-        itemBeforeEditing = null;
-    }
+//    @PostConstruct
+//    public void init() {
+//    }
 
     public void add() {
         item.setId(list.isEmpty() ? 1 : list.get(list.size() - 1).getId() + 1);
         list.add(item);
         item = new Student();
     }
-
-//    public void add() {
-//        item.setId(!students.isRowAvailable() ? 1 : students.(students.getRowCount() - 1));
-//    }
 
     public void cancelAdd() {
         item = new Student();
@@ -49,8 +44,10 @@ public class SampleBean {
         edit = true;
     }
 
-    public void saveEdit() {
-        item = new Student();
+    public void saveEdit(Student item) {
+        System.out.println(item.getFirstName());
+        item.restore(this.getItem());
+        this.item = new Student();
         edit = false;
     }
 

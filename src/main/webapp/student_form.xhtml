@@ -33,7 +33,7 @@
                 Last name: <h:inputText value="#{sampleBean.item.lastName}" />
                 <br/> <br/>
                 <h:column>
-                    <h:commandButton value="save" action="#{sampleBean.saveEdit}" />
+                    <h:commandButton value="save" action="#{sampleBean.saveEdit(sampleBean.item)}" />
                 </h:column>
                 <h:column>
                     <h:commandButton value="cancel" action="#{sampleBean.cancelEdit}" />
