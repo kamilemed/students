@@ -10,18 +10,13 @@ public class Student implements Serializable {
 
     public Student() {}
 
-    public Student( Long id, String firstName, String lastName) {
+    public Student(Long id, String firstName, String lastName) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
     }
 
-    @Override
-    public Student clone() {
-        return new Student(id, firstName, lastName);
-    }
-
-    public void restore(Student student) {
+    public void update(Student student) {
         this.id = student.id;
         this.firstName = student.firstName;
         this.lastName = student.lastName;

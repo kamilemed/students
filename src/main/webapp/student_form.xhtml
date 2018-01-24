@@ -2,59 +2,44 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:h="http://java.sun.com/jsf/html">
+
     <h:head>
         <title>Students</title>
     </h:head>
 
     <h:body>
-        <h:panelGroup rendered="#{!sampleBean.edit}">
-            <h2>Add student</h2>
-            <h:form>
-                First name: <h:inputText value="#{sampleBean.item.firstName}" />
-                <br/> <br/>
-                Last name: <h:inputText value="#{sampleBean.item.lastName}" />
-                <br/> <br/>
-                <h:column>
-                    <h:commandButton value="add" action="#{sampleBean.add}" />
-                </h:column>
-                <h:column>
-                    <h:commandButton value="cancel" action="#{sampleBean.cancelAdd}" />
-                </h:column>
-                <br/>
-            </h:form>
-        </h:panelGroup>
+        <h3>Students</h3>
 
-        <h:panelGroup rendered="#{sampleBean.edit}">
-            <h2>Edit student</h2>
-            <h:form>
-                First name: <h:inputText value="#{sampleBean.item.firstName}" />
-                <br/> <br/>
-                Last name: <h:inputText value="#{sampleBean.item.lastName}" />
-                <br/> <br/>
-                <h:column>
-                    <h:commandButton value="save" action="#{sampleBean.saveEdit(sampleBean.item)}" />
-                </h:column>
-                <h:column>
-                    <h:commandButton value="cancel" action="#{sampleBean.cancelEdit}" />
-                </h:column>
-                <br/>
-            </h:form>
-        </h:panelGroup>
+        <h4>Student information:</h4>
+        <h:form>
+            <h:inputHidden value="#{sampleBean.item.id}"/>
+            <h:outputLabel for="firstName">First Name: </h:outputLabel>
+            <h:inputText value="#{sampleBean.item.firstName}" id="firstName" required="true"
+                         requiredMessage="First name is mandatory" />
+            <br/> <br/>
+            <h:outputLabel for="lastName">Last Name: </h:outputLabel>
+            <h:inputText value="#{sampleBean.item.lastName}" id="lastName" required="true"
+                         requiredMessage="Last name is mandatory" />
+            <br/> <br/>
+            <h:column>
+                <h:commandButton value="save" action="#{sampleBean.save}"/>
+            </h:column>
+            <h:column>
+                <h:commandButton value="cancel" action="#{sampleBean.cancel}" />
+            </h:column>
+            <br/>
+        </h:form>
 
-        <h2>Students list</h2>
+        <h4>Students list</h4>
         <h:form rendered="#{not empty sampleBean.list}">
             <h:dataTable binding="#{table}" value="#{sampleBean.list}" var="item">
                 <h:column><f:facet name="header">No</f:facet>#{table.rowIndex + 1}</h:column>
                 <h:column><f:facet name="header">ID</f:facet>#{item.id}</h:column>
                 <h:column><f:facet name="header">Name</f:facet>#{item.firstName}</h:column>
                 <h:column><f:facet name="header">Surname</f:facet>#{item.lastName}</h:column>
-                <h:column>
-                    <h:commandButton value="edit" action="#{sampleBean.edit(item)}" />
-                </h:column>
-                <h:column>
-                    <h:commandButton value="delete" action="#{sampleBean.delete(item)}" />
-                </h:column>
+                <h:column><h:commandButton value="edit" action="#{sampleBean.edit(item)}" /></h:column>
+                <h:column><h:commandButton value="delete" action="#{sampleBean.delete(item)}" /></h:column>
             </h:dataTable>
         </h:form>
 
