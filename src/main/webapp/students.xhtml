@@ -11,9 +11,10 @@
     </h:head>
 
     <h:body>
-        <h3>Students</h3>
+        <h2 align="center" style="font-family: Arial">Students</h2>
 
         <p:commandButton value="Add a student" type="button" onclick="PF('studentDialog').show();" process="@this" />
+        <br/><br/>
         <p:dialog header="Student information:" widgetVar="studentDialog" modal="true" height="200">
             <h:form id="studentForm">
                 <p:inputText id="id" type="hidden" value="#{sampleBean.item.id}" />
@@ -30,9 +31,6 @@
                     <p:outputLabel for="birthDate" value="Date of birth:" />
                     <p:calendar id="birthDate" value="#{sampleBean.item.birthDate}" required="true" requiredMessage="This field is required." yearRange="c-100:c+0" navigator="true" />
                     <p:message for="birthDate" />
-
-                    <p:commandButton value="Save" action="#{sampleBean.save}" update="studentForm"/>
-                    <p:commandButton value="Cancel" action="#{sampleBean.cancel}" update="studentForm" immediate="true"/>
                 </h:panelGrid>
 
                 <p:dialog for="birthDate" modal="true" resizable="false" header="Values" widgetVar="calendarDialog" showEffect="fold" >
@@ -40,6 +38,11 @@
                         <f:convertDateTime pattern="yyyy/MM/DD" />
                     </h:outputText>
                 </p:dialog>
+
+                <h:panelGrid columns="2" cellpadding="5">
+                    <p:commandButton value="Save" action="#{sampleBean.save}" update="studentForm"/>
+                    <p:commandButton value="Cancel" action="#{sampleBean.cancel}" update="studentForm" immediate="true"/>
+                </h:panelGrid>
             </h:form>
         </p:dialog>
 

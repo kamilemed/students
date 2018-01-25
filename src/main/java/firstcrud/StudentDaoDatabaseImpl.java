@@ -15,7 +15,8 @@ public class StudentDaoDatabaseImpl implements StudentDao {
         System.out.println("Add to database");
 
         String sql = "insert into students (first_name, last_name, birth_date) values (?, ?, ?)";
-        try (PreparedStatement preparedStmt = getConnection().prepareStatement(sql)) {
+        try (Connection connectionObj = getConnection();
+             PreparedStatement preparedStmt = connectionObj.prepareStatement(sql)) {
             preparedStmt.setString(1, item.getFirstName());
             preparedStmt.setString(2, item.getLastName());
             preparedStmt.setDate(3, getSqlDateFormat(item.getBirthDate()));
@@ -30,7 +31,8 @@ public class StudentDaoDatabaseImpl implements StudentDao {
         String sql = "delete from students where student_id = "+ item.getId();
         System.out.println("Remove from database");
         System.out.println("deleteStudentRecordInDB() : Student Id: " + item.getId());
-        try (PreparedStatement preparedStmt = getConnection().prepareStatement(sql)) {
+        try (Connection connectionObj = getConnection();
+             PreparedStatement preparedStmt = connectionObj.prepareStatement(sql)) {
             preparedStmt.executeUpdate();
         } catch(Exception sqlException){
             sqlException.printStackTrace();
@@ -41,7 +43,8 @@ public class StudentDaoDatabaseImpl implements StudentDao {
     public void update(Student item) {
         System.out.println("Update in database");
         String sql = "update students set first_name=?, last_name=? , birth_date=? where student_id=?";
-        try (PreparedStatement preparedStmt =  getConnection().prepareStatement(sql)) {
+        try (Connection connectionObj = getConnection();
+             PreparedStatement preparedStmt =  connectionObj.prepareStatement(sql)) {
             preparedStmt.setString(1, item.getFirstName());
             preparedStmt.setString(2, item.getLastName());
             preparedStmt.setDate(3, getSqlDateFormat(item.getBirthDate()));
@@ -55,26 +58,11 @@ public class StudentDaoDatabaseImpl implements StudentDao {
     @Override
     public List<Student> list() {
         System.out.println("List from database");
-        return getStudentsListFromDB();
-    }
-
-    private static Connection getConnection(){
-        System.out.println("connect");
-        try {
-            Context ctx = new InitialContext();
-            DataSource ds = (DataSource) ctx.lookup("java:/comp/env/jdbc/test");
-            return ds.getConnection();
-        } catch(Exception sqlException) {
-            sqlException.printStackTrace();
-        }
-        return null;
-    }
-
-    private static ArrayList getStudentsListFromDB() {
         ArrayList list = new ArrayList();
 
-        try (Statement stmtObj = getConnection().createStatement();
-            ResultSet resultSetObj = stmtObj.executeQuery("select * from students")) {
+        try (Connection connectionObj = getConnection();
+             Statement stmtObj = connectionObj.createStatement();
+             ResultSet resultSetObj = stmtObj.executeQuery("select * from students")) {
             while(resultSetObj.next()) {
                 Student studentObj = new Student();
                 studentObj.setId(resultSetObj.getLong("student_id"));
@@ -89,6 +77,18 @@ public class StudentDaoDatabaseImpl implements StudentDao {
         }
 
         return list;
+    }
+
+    private static Connection getConnection() {
+        System.out.println("connect");
+        try {
+            Context ctx = new InitialContext();
+            DataSource ds = (DataSource) ctx.lookup("java:/comp/env/jdbc/test");
+            return ds.getConnection();
+        } catch (Exception sqlException) {
+            sqlException.printStackTrace();
+        }
+        return null;
     }
 
     private static Date getSqlDateFormat(java.util.Date birthDate){
