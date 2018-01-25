@@ -13,7 +13,6 @@ public class SampleBean implements Serializable {
 
 //    private static StudentDao studentDao = new StudentDaoInMemoryImpl();
     private StudentDao studentDao = new StudentDaoDatabaseImpl();
-
     private Student item;
 
     @PostConstruct
@@ -31,21 +30,21 @@ public class SampleBean implements Serializable {
         }
 
         item = new Student();
-        return "/student_form.xhtml?faces-redirect=true";
+        return "/students.xhtml?faces-redirect=true";
     }
 
     public String cancel() {
         System.out.println("cancel");
         item = new Student();
 
-        return "/student_form.xhtml?faces-redirect=true";
+        return "/students.xhtml?faces-redirect=true";
     }
 
     public String delete(Student item) {
         System.out.println("delete");
         studentDao.remove(item);
 
-        return "/student_form.xhtml?faces-redirect=true";
+        return "/students.xhtml?faces-redirect=true";
     }
 
     public void edit(Student item) {

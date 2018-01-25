@@ -10,7 +10,7 @@
 
     <display-name>JSF Example</display-name>
     <welcome-file-list>
-        <welcome-file>student_form.xhtml</welcome-file>
+        <welcome-file>students.xhtml</welcome-file>
     </welcome-file-list>
 
     <servlet>
@@ -31,7 +31,7 @@
     <context-param>
         <param-name>BaseUrl</param-name>
         <param-value>
-            http://localhost:8082/firstcrud/
+            http://localhost:8081/firstcrud/
         </param-value>
     </context-param>
 
@@ -41,7 +41,7 @@
     </context-param>
 
     <context-param>
-        <param-name>facelets.SKIP_COMMENTS</param-name>
+        <param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
         <param-value>true</param-value>
     </context-param>
 </web-app>
