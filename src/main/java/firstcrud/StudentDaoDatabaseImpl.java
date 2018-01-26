@@ -28,8 +28,9 @@ public class StudentDaoDatabaseImpl implements StudentDao {
 
     @Override
     public void remove(Student item) {
-        String sql = "delete from students where student_id = "+ item.getId();
         System.out.println("Remove from database");
+
+        String sql = "delete from students where student_id = "+ item.getId();
         System.out.println("deleteStudentRecordInDB() : Student Id: " + item.getId());
         try (Connection connectionObj = getConnection();
              PreparedStatement preparedStmt = connectionObj.prepareStatement(sql)) {
@@ -42,6 +43,7 @@ public class StudentDaoDatabaseImpl implements StudentDao {
     @Override
     public void update(Student item) {
         System.out.println("Update in database");
+
         String sql = "update students set first_name=?, last_name=? , birth_date=? where student_id=?";
         try (Connection connectionObj = getConnection();
              PreparedStatement preparedStmt =  connectionObj.prepareStatement(sql)) {

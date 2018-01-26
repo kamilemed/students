@@ -4,6 +4,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 @ManagedBean

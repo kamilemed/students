@@ -15,7 +15,7 @@
 
         <p:commandButton value="Add a student" type="button" onclick="PF('studentDialog').show();" process="@this" />
         <br/><br/>
-        <p:dialog header="Student information:" widgetVar="studentDialog" modal="true" height="200">
+        <p:dialog header="Student information:" widgetVar="studentDialog" modal="true" height="200" >
             <h:form id="studentForm">
                 <p:inputText id="id" type="hidden" value="#{sampleBean.item.id}" />
 
@@ -28,26 +28,28 @@
                     <p:inputText id="lastName" value="#{sampleBean.item.lastName}" required="true" requiredMessage="This field is required." />
                     <p:message for="lastName" />
 
-                    <p:outputLabel for="birthDate" value="Date of birth:" />
-                    <p:calendar id="birthDate" value="#{sampleBean.item.birthDate}" required="true" requiredMessage="This field is required." yearRange="c-100:c+0" navigator="true" />
-                    <p:message for="birthDate" />
+                    <p:outputLabel for="birthDate" value="Date of Birth:" />
+                    <p:calendar id="birthDate" binding="#{birthDateComponent}" value="#{sampleBean.item.birthDate}" required="true"
+                                pattern="yyyy-MM-dd" yearRange="c-100:c+0" navigator="true" requiredMessage="This field is required." >
+                        <f:validator validatorId="dateRangeValidator" />
+                        <f:attribute name="birthDateComponent" value="#{birthDateComponent}" />
+                    </p:calendar>
+                    <p:message id="birthDateMessage" for="birthDate" />
                 </h:panelGrid>
 
                 <p:dialog for="birthDate" modal="true" resizable="false" header="Values" widgetVar="calendarDialog" showEffect="fold" >
-                    <h:outputText value="#{sampleBean.item.birthDate}">
-                        <f:convertDateTime pattern="yyyy/MM/DD" />
-                    </h:outputText>
+                    <h:outputText value="#{sampleBean.item.birthDate}"/>
                 </p:dialog>
 
                 <h:panelGrid columns="2" cellpadding="5">
                     <p:commandButton value="Save" action="#{sampleBean.save}" update="studentForm"/>
-                    <p:commandButton value="Cancel" action="#{sampleBean.cancel}" update="studentForm" immediate="true"/>
+                    <p:commandButton value="Cancel" action="#{sampleBean.cancel}" update="studentForm" immediate="true" />
                 </h:panelGrid>
             </h:form>
         </p:dialog>
 
         <h:form rendered="#{not empty sampleBean.list}">
-            <p:dataTable id="students_table" binding="#{table}" value="#{sampleBean.list}" var="item">
+            <p:dataTable id="students_table" binding="#{table}" value="#{sampleBean.list}" var="item" >
                 <p:column><f:facet name="header">No</f:facet>#{table.rowIndex + 1}</p:column>
                 <p:column><f:facet name="header">ID</f:facet>#{item.id}</p:column>
                 <p:column><f:facet name="header">Name</f:facet>#{item.firstName}</p:column>
