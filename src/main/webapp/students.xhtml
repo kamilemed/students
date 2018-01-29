@@ -13,26 +13,31 @@
     <h:body>
         <h2 align="center" style="font-family: Arial">Students</h2>
 
-        <p:commandButton value="Add a student" type="button" onclick="PF('studentDialog').show();" process="@this" />
+        <p:commandButton value="Add a student" type="button" onclick="PF('studentDialog').show()" process="@all" update="studentForm"/>
         <br/><br/>
-        <p:dialog header="Student information:" widgetVar="studentDialog" modal="true" height="200" >
+        <p:dialog header="Student information:" widgetVar="studentDialog" modal="true" height="200" closable="false" >
             <h:form id="studentForm">
-                <p:inputText id="id" type="hidden" value="#{sampleBean.item.id}" />
-
+                <p:inputText id="studentId" type="hidden" value="#{sampleBean.item.id}" />
                 <h:panelGrid id="studentFormGrid" columns="3" cellpadding="5">
                     <p:outputLabel for="firstName" value="First Name:"></p:outputLabel>
-                    <p:inputText id="firstName" value="#{sampleBean.item.firstName}" required="true" requiredMessage="This field is required." />
-                    <p:message for="firstName" />
+                    <p:inputText id="firstName" value="#{sampleBean.item.firstName}" required="true" requiredMessage="This field is required.">
+                        <p:ajax event="change" update="firstNameMessage" />
+                    </p:inputText>
+                    <p:message id="firstNameMessage" for="firstName" />
 
                     <p:outputLabel for="lastName" value="Last Name:"></p:outputLabel>
-                    <p:inputText id="lastName" value="#{sampleBean.item.lastName}" required="true" requiredMessage="This field is required." />
-                    <p:message for="lastName" />
+                    <p:inputText id="lastName" value="#{sampleBean.item.lastName}" required="true" requiredMessage="This field is required." >
+                        <p:ajax event="change" update="lastNameMessage" />
+                    </p:inputText>
+                    <p:message id="lastNameMessage" for="lastName" />
 
                     <p:outputLabel for="birthDate" value="Date of Birth:" />
                     <p:calendar id="birthDate" binding="#{birthDateComponent}" value="#{sampleBean.item.birthDate}" required="true"
-                                pattern="yyyy-MM-dd" yearRange="c-100:c+0" navigator="true" requiredMessage="This field is required." >
-                        <f:validator validatorId="dateRangeValidator" />
+                                pattern="yyyy-MM-dd" navigator="true" requiredMessage="This field is required." maxdate="#{sampleBean.today}" >
+                        <f:validator validatorId="calendarValidator" />
                         <f:attribute name="birthDateComponent" value="#{birthDateComponent}" />
+                        <p:ajax event="change" update="birthDateMessage" />
+                        <p:ajax event="dateSelect" update="birthDateMessage" />
                     </p:calendar>
                     <p:message id="birthDateMessage" for="birthDate" />
                 </h:panelGrid>
@@ -41,23 +46,25 @@
                     <h:outputText value="#{sampleBean.item.birthDate}"/>
                 </p:dialog>
 
-                <h:panelGrid columns="2" cellpadding="5">
-                    <p:commandButton value="Save" action="#{sampleBean.save}" update="studentForm"/>
-                    <p:commandButton value="Cancel" action="#{sampleBean.cancel}" update="studentForm" immediate="true" />
+                <h:panelGrid columns="2" cellpadding="5" >
+                    <p:commandButton value="Save" actionListener="#{sampleBean.save}" update="studentForm studentsListForm"
+                                     oncomplete="if (args &amp;&amp; !args.validationFailed) PF('studentDialog').hide()" />
+                    <p:commandButton value="Cancel" actionListener="#{sampleBean.cancel}" update="studentForm" immediate="true" resetValues="true"
+                                     oncomplete="PF('studentDialog').hide()" />
                 </h:panelGrid>
             </h:form>
         </p:dialog>
 
-        <h:form rendered="#{not empty sampleBean.list}">
-            <p:dataTable id="students_table" binding="#{table}" value="#{sampleBean.list}" var="item" >
+        <h:form id="studentsListForm" rendered="#{not empty sampleBean.list}">
+            <p:dataTable id="studentsTable" binding="#{table}" value="#{sampleBean.list}" var="item" >
                 <p:column><f:facet name="header">No</f:facet>#{table.rowIndex + 1}</p:column>
                 <p:column><f:facet name="header">ID</f:facet>#{item.id}</p:column>
                 <p:column><f:facet name="header">Name</f:facet>#{item.firstName}</p:column>
                 <p:column><f:facet name="header">Surname</f:facet>#{item.lastName}</p:column>
                 <p:column><f:facet name="header">Date of birth</f:facet>#{item.birthDate}</p:column>
-                <p:column><p:commandButton value="edit" action="#{sampleBean.edit(item)}" update="studentForm" oncomplete="PF('studentDialog').show();" /></p:column>
+                <p:column><p:commandButton value="edit" actionListener="#{sampleBean.edit(item)}" update="studentForm" oncomplete="PF('studentDialog').show();" /></p:column>
                 <p:column>
-                    <p:commandButton value="delete" action="#{sampleBean.delete(item)}" >
+                    <p:commandButton value="delete" actionListener="#{sampleBean.delete(item)}" update="studentsListForm" >
                         <p:confirm header="Confirmation" message="Are you sure you want to delete?" icon="ui-icon-alert" />
                     </p:commandButton>
                     <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">

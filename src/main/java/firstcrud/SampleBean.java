@@ -1,5 +1,7 @@
 package firstcrud;
 
+import org.primefaces.context.RequestContext;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
@@ -29,8 +31,8 @@ public class SampleBean implements Serializable {
         } else {
             studentDao.add(item);
         }
-
         item = new Student();
+
         return "/students.xhtml?faces-redirect=true";
     }
 
@@ -65,4 +67,7 @@ public class SampleBean implements Serializable {
         return studentDao.list();
     }
 
+    public Date getToday() {
+        return new Date();
+    }
 }
