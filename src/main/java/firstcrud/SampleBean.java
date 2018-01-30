@@ -1,10 +1,10 @@
 package firstcrud;
 
-import org.primefaces.context.RequestContext;
-
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +16,8 @@ public class SampleBean implements Serializable {
 
 //    private static StudentDao studentDao = new StudentDaoInMemoryImpl();
     private StudentDao studentDao = new StudentDaoDatabaseImpl();
+
+//    @ManagedProperty(value = "#{item}")
     private Student item;
 
     @PostConstruct
