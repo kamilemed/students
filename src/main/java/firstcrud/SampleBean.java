@@ -5,6 +5,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
+import java.awt.event.ActionEvent;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -16,18 +17,25 @@ public class SampleBean implements Serializable {
 
 //    private static StudentDao studentDao = new StudentDaoInMemoryImpl();
     private StudentDao studentDao = new StudentDaoDatabaseImpl();
-
-//    @ManagedProperty(value = "#{item}")
     private Student item;
+
+    @ManagedProperty(value = "#{param.id}")
+    private Long id = null;
 
     @PostConstruct
     public void init() {
         System.out.println("init");
-        item = new Student();
+
+        if (id != null) {
+            item = getItem(id);
+        } else {
+            item = new Student();
+        }
     }
 
     public String save() {
         System.out.println("save");
+
         if (item.getId() != null) {
             studentDao.update(item);
         } else {
@@ -52,13 +60,26 @@ public class SampleBean implements Serializable {
         return "/students.xhtml?faces-redirect=true";
     }
 
-    public void edit(Student item) {
-        System.out.println("edit");
-        this.item = item;
+//    public void edit() {
+//        System.out.println("edit");
+//        this.item = getItem(id);
+//    }
+
+    public boolean getIsEdit() {
+        return id != null;
     }
 
     public Student getItem() {
         return item;
+    }
+
+    private Student getItem(Long id) {
+        for (Student student : getList()) {
+            if (student.getId() == id) {
+                return student;
+            }
+        }
+        return null;
     }
 
     public void setItem(Student item) {
@@ -71,5 +92,13 @@ public class SampleBean implements Serializable {
 
     public Date getToday() {
         return new Date();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

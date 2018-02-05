@@ -59,7 +59,7 @@ public class StudentDaoDatabaseImpl implements StudentDao {
 
     @Override
     public List<Student> list() {
-        System.out.println("List from database");
+//        System.out.println("List from database");
         ArrayList list = new ArrayList();
 
         try (Connection connectionObj = getConnection();
@@ -73,7 +73,7 @@ public class StudentDaoDatabaseImpl implements StudentDao {
                 studentObj.setBirthDate(resultSetObj.getDate("birth_date"));
                 list.add(studentObj);
             }
-            System.out.println("Total Records Fetched: " + list.size());
+//            System.out.println("Total Records Fetched: " + list.size());
         } catch(Exception sqlException) {
             sqlException.printStackTrace();
         }
@@ -82,7 +82,7 @@ public class StudentDaoDatabaseImpl implements StudentDao {
     }
 
     private static Connection getConnection() {
-        System.out.println("connect");
+//        System.out.println("connect");
         try {
             Context ctx = new InitialContext();
             DataSource ds = (DataSource) ctx.lookup("java:/comp/env/jdbc/test");
