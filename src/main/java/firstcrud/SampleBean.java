@@ -4,11 +4,8 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
-import javax.faces.bean.ViewScoped;
-import java.awt.event.ActionEvent;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @ManagedBean
 @RequestScoped
@@ -60,10 +57,10 @@ public class SampleBean implements Serializable {
         return "/students.xhtml?faces-redirect=true";
     }
 
-//    public void edit() {
-//        System.out.println("edit");
-//        this.item = getItem(id);
-//    }
+    public void edit() {
+        System.out.println("edit");
+        this.item = getItem(id);
+    }
 
     public boolean getIsEdit() {
         return id != null;

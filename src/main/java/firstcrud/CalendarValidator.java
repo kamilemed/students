@@ -17,7 +17,7 @@ public class CalendarValidator implements Validator {
         Date today = new Date();
 
         if (birthDate.after(today)) {
-            FacesMessage msg = new FacesMessage("Chosen birth date cannot be after today.", null);
+            FacesMessage msg = new FacesMessage("message", null);
             msg.setSeverity(FacesMessage.SEVERITY_ERROR);
             throw new ValidatorException(msg);
         }
