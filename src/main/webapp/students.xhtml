@@ -11,7 +11,6 @@
 
         <f:loadBundle var="msg" basename="messages" />
         <f:loadBundle var="validationMsg" basename="ValidationMessages" />
-
     </h:head>
 
     <h:body>
@@ -19,10 +18,10 @@
 
         <h:form>
             <h:panelGrid columns = "2">
-                <h:selectOneMenu value = "#{languageBean.locale}" onchange = "submit()"
+                <p:selectOneMenu value = "#{languageBean.locale}" onchange = "submit()"
                                  valueChangeListener = "#{languageBean.localeChanged}">
                     <f:selectItems value = "#{languageBean.countries}" />
-                </h:selectOneMenu>
+                </p:selectOneMenu>
             </h:panelGrid>
         </h:form>
         <br/><br/>
@@ -44,8 +43,8 @@
 
                     <p:outputLabel for="birthDate" value="#{msg['studentDialog.form.label.birthDate']}" />
                     <p:calendar id="birthDate" binding="#{birthDateComponent}" value="#{sampleBean.item.birthDate}" required="true"
-                                pattern="yyyy-MM-dd" navigator="true" maxdate="#{sampleBean.today}" >
-                        <f:validator validatorId="calendarValidator" />
+                                pattern="yyyy-MM-dd" navigator="true" maxdate="#{sampleBean.today}"
+                                validator="calendarValidator" >
                         <f:attribute name="birthDateComponent" value="#{birthDateComponent}" />
                     </p:calendar>
                     <p:message id="birthDateMessage" for="birthDate" />
@@ -64,36 +63,82 @@
             </h:form>
         </p:dialog>
 
-        <h:panelGroup id="studentsList" rendered="#{not empty sampleBean.list}">
-            <p:dataTable id="studentsTable" binding="#{table}" value="#{sampleBean.list}" var="item" >
-
-                    <p:column headerText="#{msg['studentsTable.label.no']}">
+        <h:form id="studentsList" rendered="#{not empty sampleBean.list}" >
+            <p:dataTable id="studentsTable" binding="#{table}" value="#{sampleBean.lazyModel}" var="item" paginator="true" rows="10"
+                         paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                         rowsPerPageTemplate="5,10,15" lazy="true" >
+                <p:column headerText="#{msg['studentsTable.label.no']}" >
                         <h:outputText value="#{table.rowIndex + 1}" />
-                    </p:column>
-                    <p:column headerText="#{msg['studentsTable.label.id']}">
-                        <h:outputText value="#{item.id}" />
-                    </p:column>
-                    <p:column headerText="#{msg['studentsTable.label.firstName']}">
-                        <h:outputText value="#{item.firstName}" />
-                    </p:column>
-                    <p:column headerText="#{msg['studentsTable.label.lastName']}">
-                        <h:outputText value="#{item.lastName}" />
-                    </p:column>
-                    <p:column headerText="#{msg['studentsTable.label.birthDate']}">
-                        <h:outputText value="#{item.birthDate}" />
-                    </p:column>
-                    <p:column>
-                        <p:commandButton value="#{msg['button.edit']}" actionListener="#{sampleBean.edit}" update="studentForm" oncomplete="PF('studentDialog').show()" >
-                            <f:param name="id" value="#{item.id}" />
-                        </p:commandButton>
-                    </p:column>
-                    <p:column>
-                        <p:commandButton id="delete" value="#{msg['button.delete']}" actionListener="#{sampleBean.delete(item)}" update="studentsList" >
-                            <p:confirm header="#{msg['confirmation.header']}" message="#{msg['message.delete.confirmation']}" icon="ui-icon-alert" />
-                        </p:commandButton>
-                    </p:column>
+                </p:column>
+                <p:column headerText="#{msg['studentsTable.label.id']}" sortBy="#{item.id}" field="student_id">
+                    <h:outputText value="#{item.id}" />
+                </p:column>
+                <p:column headerText="#{msg['studentsTable.label.firstName']}" sortBy="#{item.firstName}" field="first_name">
+                    <h:outputText value="#{item.firstName}" />
+                </p:column>
+                <p:column headerText="#{msg['studentsTable.label.lastName']}" sortBy="#{item.lastName}" field="last_name">
+                    <h:outputText value="#{item.lastName}" />
+                </p:column>
+                <p:column headerText="#{msg['studentsTable.label.birthDate']}" sortBy="#{item.birthDate}" field="birth_date">
+                    <h:outputText value="#{item.birthDate}" />
+                </p:column>
+                <p:column>
+                    <p:commandButton value="#{msg['button.edit']}" actionListener="#{sampleBean.edit}" update="studentForm" oncomplete="PF('studentDialog').show()" >
+                        <f:param name="id" value="#{item.id}" />
+                    </p:commandButton>
+                </p:column>
+                <p:column>
+                    <p:commandButton id="delete" value="#{msg['button.delete']}" actionListener="#{sampleBean.delete(item)}" update="studentsList" >
+                        <p:confirm header="#{msg['confirmation.header']}" message="#{msg['message.delete.confirmation']}" icon="ui-icon-alert" />
+                    </p:commandButton>
+                </p:column>
             </p:dataTable>
-        </h:panelGroup>
+        </h:form>
+
+
+        <!--<h:form id="studentsList" rendered="#{not empty sampleBean.list}" >-->
+            <!--<h:dataTable id="studentsTable" binding="#{table}" value="#{sampleBean.list}" var="item" >-->
+                <!--<h:column headerText="#{msg['studentsTable.label.no']}" >-->
+                    <!--<h:outputText value="#{table.rowIndex + 1}" />-->
+                <!--</h:column>-->
+                <!--<h:column>-->
+                    <!--<f:facet name="header">-->
+                        <!--<h:commandLink value="ID" actionListener="#{sampleBean.sort('id')}">-->
+                            <!--<f:param name="sortAscending" value="#{sampleBean.sortAscending}"/>-->
+                        <!--</h:commandLink>-->
+                    <!--</f:facet>-->
+                    <!--<h:outputText value="#{item.id}" />-->
+                <!--</h:column>-->
+                <!--<h:column>-->
+                    <!--<f:facet name="header">-->
+                        <!--<h:commandLink value="Name" actionListener="#{sampleBean.sort('name')}"/>-->
+                    <!--</f:facet>-->
+                    <!--<h:outputText value="#{item.firstName}" />-->
+                <!--</h:column>-->
+                <!--<h:column>-->
+                    <!--<f:facet name="header">-->
+                        <!--<h:commandLink value="Surname" actionListener="#{sampleBean.sort('surname')}"/>-->
+                    <!--</f:facet>-->
+                    <!--<h:outputText value="#{item.lastName}" />-->
+                <!--</h:column>-->
+                <!--<h:column>-->
+                    <!--<f:facet name="header">-->
+                        <!--<h:commandLink value="Birth Date" actionListener="#{sampleBean.sort('birthDate')}"/>-->
+                    <!--</f:facet>-->
+                    <!--<h:outputText value="#{item.birthDate}" />-->
+                <!--</h:column>-->
+                <!--&lt;!&ndash;<h:column>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<h:commandButton value="#{msg['button.edit']}" actionListener="#{sampleBean.edit}" update="studentForm" oncomplete="PF('studentDialog').show()" >&ndash;&gt;-->
+                        <!--&lt;!&ndash;<f:param name="id" value="#{item.id}" />&ndash;&gt;-->
+                    <!--&lt;!&ndash;</h:commandButton>&ndash;&gt;-->
+                <!--&lt;!&ndash;</h:column>&ndash;&gt;-->
+                <!--&lt;!&ndash;<p:column>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<p:commandButton id="delete" value="#{msg['button.delete']}" actionListener="#{sampleBean.delete(item)}" update="studentsList" >&ndash;&gt;-->
+                        <!--&lt;!&ndash;<p:confirm header="#{msg['confirmation.header']}" message="#{msg['message.delete.confirmation']}" icon="ui-icon-alert" />&ndash;&gt;-->
+                    <!--&lt;!&ndash;</p:commandButton>&ndash;&gt;-->
+                <!--&lt;!&ndash;</:column>&ndash;&gt;-->
+            <!--</h:dataTable>-->
+        <!--</h:form>-->
 
         <h:panelGroup rendered="#{empty sampleBean.list}">
             <p>No students! Please add students.</p>

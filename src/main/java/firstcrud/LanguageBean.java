@@ -14,15 +14,15 @@ import java.util.Map;
 @RequestScoped
 public class LanguageBean implements Serializable {
     private static final long serialVersionUID = 1L;
-    private String locale;
 
+    private String locale;
     private Map<String,Object> countries;
 
     @PostConstruct
     public void init() {
         countries = new LinkedHashMap<String,Object>();
         countries.put("English", Locale.ENGLISH);
-        countries.put("Lietuvių", Locale.ITALIAN);
+        countries.put("Lietuvių", new Locale.Builder().setLanguage("lt").setRegion("LT").build());
     }
 
     public Map<String, Object> getCountries() {
@@ -42,10 +42,8 @@ public class LanguageBean implements Serializable {
         String newLocaleValue = e.getNewValue().toString();
 
         for (Map.Entry<String, Object> entry : countries.entrySet()) {
-
             if(entry.getValue().toString().equals(newLocaleValue)) {
-                FacesContext.getCurrentInstance()
-                        .getViewRoot().setLocale((Locale)entry.getValue());
+                FacesContext.getCurrentInstance().getViewRoot().setLocale((Locale)entry.getValue());
             }
         }
     }

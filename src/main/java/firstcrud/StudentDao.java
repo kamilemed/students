@@ -1,5 +1,8 @@
 package firstcrud;
 
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
+
 import java.util.List;
 
 public interface StudentDao {
@@ -25,7 +28,7 @@ public interface StudentDao {
      *
      * @return
      */
-    public List<Student> list();
+//    public List<Student> list();
 
-    
+    public List<Student> list(int first, int pageSize, String sortField, SortOrder sortOrder);
 }

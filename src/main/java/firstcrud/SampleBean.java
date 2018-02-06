@@ -1,9 +1,14 @@
 package firstcrud;
 
+import org.primefaces.model.LazyDataModel;
+
 import javax.annotation.PostConstruct;
+import javax.el.MethodExpression;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import java.io.Serializable;
 import java.util.*;
 
@@ -15,6 +20,8 @@ public class SampleBean implements Serializable {
 //    private static StudentDao studentDao = new StudentDaoInMemoryImpl();
     private StudentDao studentDao = new StudentDaoDatabaseImpl();
     private Student item;
+    private LazyDataModel<Student> lazyModel;
+
 
     @ManagedProperty(value = "#{param.id}")
     private Long id = null;
@@ -22,12 +29,13 @@ public class SampleBean implements Serializable {
     @PostConstruct
     public void init() {
         System.out.println("init");
-
         if (id != null) {
             item = getItem(id);
         } else {
             item = new Student();
         }
+
+        lazyModel = new StudentLazyDataModel(studentDao);
     }
 
     public String save() {
@@ -83,6 +91,14 @@ public class SampleBean implements Serializable {
         this.item = item;
     }
 
+    public LazyDataModel<Student> getLazyModel() {
+        return lazyModel;
+    }
+
+    public void setLazyModel(LazyDataModel<Student> lazyModel) {
+        this.lazyModel = lazyModel;
+    }
+
     public List<Student> getList() {
         return studentDao.list();
     }
@@ -98,4 +114,5 @@ public class SampleBean implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+
 }

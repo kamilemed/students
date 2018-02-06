@@ -1,14 +1,28 @@
 package firstcrud;
 
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
-public class StudentDaoDatabaseImpl implements StudentDao {
+import static org.primefaces.component.treetable.TreeTable.PropertyKeys.first;
+import static org.primefaces.model.SortOrder.ASCENDING;
+
+public class StudentDaoDatabaseImpl extends LazyDataModel<Student> implements StudentDao {
+
+//    private ArrayList<Student> datasource;
+//
+//    public StudentDaoDatabaseImpl(ArrayList<Student> datasource) {
+//        this.datasource = datasource;
+//    }
 
     @Override
     public void add(Student item) {
@@ -57,15 +71,44 @@ public class StudentDaoDatabaseImpl implements StudentDao {
         }
     }
 
+//    @Override
+//    public List<Student> list() {
+////        System.out.println("List from database");
+//        ArrayList list = new ArrayList();
+//
+//        try (Connection connectionObj = getConnection();
+//             Statement stmtObj = connectionObj.createStatement();
+//             ResultSet resultSetObj = stmtObj.executeQuery("select * from students")) { //ORDER BY student_id DESC
+//            while(resultSetObj.next()) {
+//                Student studentObj = new Student();
+//                studentObj.setId(resultSetObj.getLong("student_id"));
+//                studentObj.setFirstName(resultSetObj.getString("first_name"));
+//                studentObj.setLastName(resultSetObj.getString("last_name"));
+//                studentObj.setBirthDate(resultSetObj.getDate("birth_date"));
+//                list.add(studentObj);
+//            }
+////            System.out.println("Total Records Fetched: " + list.size());
+//        } catch(Exception sqlException) {
+//            sqlException.printStackTrace();
+//        }
+//
+//        return list;
+//    }
+
     @Override
-    public List<Student> list() {
-//        System.out.println("List from database");
-        ArrayList list = new ArrayList();
+    public List<Student> list(int first, int pageSize, String sortField, SortOrder sortOrder) {
+        List<Student> list = new ArrayList<>();
+
+        System.out.println(sortField);
+        String order = sortOrder == ASCENDING ? "ASC" : "DESC";
+        String sql = sortField != null
+                ? "select * from students ORDER BY " + sortField + " " + order
+                : "select * from students";
 
         try (Connection connectionObj = getConnection();
              Statement stmtObj = connectionObj.createStatement();
-             ResultSet resultSetObj = stmtObj.executeQuery("select * from students")) {
-            while(resultSetObj.next()) {
+             ResultSet resultSetObj = stmtObj.executeQuery(sql)) { //ORDER BY student_id DESC
+            while (resultSetObj.next()) {
                 Student studentObj = new Student();
                 studentObj.setId(resultSetObj.getLong("student_id"));
                 studentObj.setFirstName(resultSetObj.getString("first_name"));
@@ -73,9 +116,8 @@ public class StudentDaoDatabaseImpl implements StudentDao {
                 studentObj.setBirthDate(resultSetObj.getDate("birth_date"));
                 list.add(studentObj);
             }
-//            System.out.println("Total Records Fetched: " + list.size());
-        } catch(Exception sqlException) {
-            sqlException.printStackTrace();
+        } catch (Exception sqlException) {
+                sqlException.printStackTrace();
         }
 
         return list;

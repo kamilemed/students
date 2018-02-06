@@ -7,6 +7,8 @@ import javax.faces.validator.FacesValidator;
 import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 import java.util.Date;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 @FacesValidator("calendarValidator")
 public class CalendarValidator implements Validator {
@@ -17,7 +19,12 @@ public class CalendarValidator implements Validator {
         Date today = new Date();
 
         if (birthDate.after(today)) {
-            FacesMessage msg = new FacesMessage("message", null);
+            String messageBundleName = context.getApplication().getMessageBundle();
+            Locale locale = context.getViewRoot().getLocale();
+            ResourceBundle bundle = ResourceBundle.getBundle(messageBundleName, locale);
+
+            String message = bundle.getString("error.set.date");
+            FacesMessage msg = new FacesMessage(message, null);
             msg.setSeverity(FacesMessage.SEVERITY_ERROR);
             throw new ValidatorException(msg);
         }
