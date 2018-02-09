@@ -2,6 +2,7 @@ package firstcrud;
 
 import org.primefaces.model.SortOrder;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,21 +23,12 @@ public class StudentDaoInMemoryImpl implements StudentDao{
 
     @Override
     public void update(Student item) {
-        Student existingItem = findStudent(item.getId());
+        Student existingItem = findById(item.getId());
         existingItem.update(item);
     }
 
-//    @Override
-//    public List<Student> list() {
-//        return list;
-//    }
-
     @Override
-    public List<Student> list(int first, int pageSize, String sortField, SortOrder sortOrder) {
-        return null;
-    }
-
-    private Student findStudent(Long id) {
+    public Student findById(Long id) {
         for (Student student : list) {
             if (student.getId() == id) {
                 return student;
@@ -45,4 +37,13 @@ public class StudentDaoInMemoryImpl implements StudentDao{
         return null;
     }
 
+    @Override
+    public List<Student> findAll(int first, int pageSize, String sortField, SortOrder sortOrder) {
+        return null;
+    }
+
+    @Override
+    public int count() {
+        return 0;
+    }
 }

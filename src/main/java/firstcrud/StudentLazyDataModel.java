@@ -16,14 +16,8 @@ public class StudentLazyDataModel extends LazyDataModel<Student> {
     @Override
     public List<Student> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String,Object> filters) {
         System.out.println("load");
-        List<Student> data;
-        data = dao.list(first, pageSize, sortField, sortOrder);
-
-        //rowCount
-        int dataSize = data.size();
-        this.setRowCount(dataSize);
-
+        List<Student> data = dao.findAll(first, pageSize, sortField, sortOrder);
+        this.setRowCount(dao.count());
         return data;
     }
-
 }

@@ -3,17 +3,15 @@ package firstcrud;
 import org.primefaces.model.LazyDataModel;
 
 import javax.annotation.PostConstruct;
-import javax.el.MethodExpression;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
+import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
 import java.util.*;
 
 @ManagedBean
-@RequestScoped
+@ViewScoped
 public class SampleBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -22,19 +20,10 @@ public class SampleBean implements Serializable {
     private Student item;
     private LazyDataModel<Student> lazyModel;
 
-
-    @ManagedProperty(value = "#{param.id}")
-    private Long id = null;
-
     @PostConstruct
     public void init() {
         System.out.println("init");
-        if (id != null) {
-            item = getItem(id);
-        } else {
-            item = new Student();
-        }
-
+        item = new Student();
         lazyModel = new StudentLazyDataModel(studentDao);
     }
 
@@ -58,33 +47,20 @@ public class SampleBean implements Serializable {
         return "/students.xhtml?faces-redirect=true";
     }
 
-    public String delete(Student item) {
+    public String delete(Long id) {
         System.out.println("delete");
-        studentDao.remove(item);
+        studentDao.remove(studentDao.findById(id));
 
         return "/students.xhtml?faces-redirect=true";
     }
 
-    public void edit() {
+    public void edit(Long id) {
         System.out.println("edit");
-        this.item = getItem(id);
-    }
-
-    public boolean getIsEdit() {
-        return id != null;
+        this.item = studentDao.findById(id);
     }
 
     public Student getItem() {
         return item;
-    }
-
-    private Student getItem(Long id) {
-        for (Student student : getList()) {
-            if (student.getId() == id) {
-                return student;
-            }
-        }
-        return null;
     }
 
     public void setItem(Student item) {
@@ -99,20 +75,7 @@ public class SampleBean implements Serializable {
         this.lazyModel = lazyModel;
     }
 
-    public List<Student> getList() {
-        return studentDao.list();
-    }
-
     public Date getToday() {
         return new Date();
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
 }

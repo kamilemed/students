@@ -28,7 +28,9 @@ public interface StudentDao {
      *
      * @return
      */
-//    public List<Student> list();
+    public Student findById(Long id);
 
-    public List<Student> list(int first, int pageSize, String sortField, SortOrder sortOrder);
+    public List<Student> findAll(int first, int pageSize, String sortField, SortOrder sortOrder);
+
+    public int count();
 }

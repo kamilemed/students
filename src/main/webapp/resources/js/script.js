@@ -4,3 +4,13 @@ function hideDialogOnSuccess(args, dialogWidgetVar) {
     }
 }
 
+
+$(function() {
+    $(document).tooltip({
+        position: {
+            my: "center bottom",
+            at: "center top"
+        }
+    }).off("focusin focusout");
+});
+
