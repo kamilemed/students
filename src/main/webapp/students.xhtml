@@ -21,7 +21,7 @@
         <h:form>
             <h:panelGrid columns = "2">
                 <p:selectOneMenu value = "#{languageBean.locale}" valueChangeListener = "#{languageBean.localeChanged}" onchange="submit();">
-                    <f:selectItems value = "#{languageBean.countries}" />
+                    <f:selectItems value = "#{languageBean.countries}" />/
                 </p:selectOneMenu>
             </h:panelGrid>
         </h:form>
