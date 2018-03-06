@@ -1,0 +1,27 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui" >
+
+    <h:panelGrid columns="3" cellpadding="5">
+        <p:outputLabel for="#{id}" value="#{label}" />
+        <f:choose>
+            <f:when test="#{type == 'date'}">
+                <p:calendar id="#{id}" value="#{value}" required="true"
+                            pattern="yyyy-MM-dd" navigator="true" maxdate="#{sampleBean.today}"
+                            validator="calendarValidator" title="#{title}" />
+                <p:message for="#{id}" />
+            </f:when>
+            <f:otherwise>
+                <p:inputText id="#{id}" value="#{value}" required="true" title="#{title}" />
+                <p:message for="#{id}" />
+            </f:otherwise>
+        </f:choose>
+    </h:panelGrid>
+
+    <p:dialog for="#{id}" modal="true" resizable="false" widgetVar="calendarDialog" showEffect="fold">
+        <h:outputText value ="#{value}" />
+    </p:dialog>
+
+</ui:composition>

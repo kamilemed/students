@@ -1,105 +1,102 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:component = "http://xmlns.jcp.org/jsf/composite/component"
+      xmlns:my="http://example.com/my"
+>
 
-    <h:head>
-        <title>Students</title>
-        <f:loadBundle var="msg" basename="messages" />
-        <f:loadBundle var="validationMsg" basename="ValidationMessages" />
 
-        <script type="text/javascript" src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
-        <link type="text/css" rel="stylesheet" href="https://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css" />
+<h:head>
+    <title>Students</title>
+    <f:loadBundle var="msg" basename="messages"/>
+    <f:loadBundle var="validationMsg" basename="ValidationMessages"/>
+    <script type="text/javascript" src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"/>
+    <link type="text/css" rel="stylesheet" href="https://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css"/>
+    <h:outputScript library="js" name="script.js"/>
+</h:head>
 
-        <h:outputScript library = "js" name = "script.js" />
-    </h:head>
+<h:body>
+    <h:form id="languageBar">
+        <h:panelGrid columns="2">
+            <p:selectOneMenu value="#{languageBean.locale}"
+                             onchange="submit();"
+                valueChangeListener="#{languageBean.localeChanged}">
+                <!--<p:ajax event="change" update="languageBar, addButton, studentDialog, studentsList" listener="#{languageBean.localeChanged}"/>-->
+                <f:selectItems value="#{languageBean.countries}"/>
+            </p:selectOneMenu>
+        </h:panelGrid>
+    </h:form>
+    <br/><br/>
 
-    <h:body>
-        <h:form>
-            <h:panelGrid columns = "2">
-                <p:selectOneMenu value = "#{languageBean.locale}" valueChangeListener = "#{languageBean.localeChanged}" onchange="submit();">
-                    <f:selectItems value = "#{languageBean.countries}" />/
-                </p:selectOneMenu>
+    <p:commandButton id="addButton" value="#{msg['button.label.addStudent']}" type="button" onclick="PF('studentDialog').show()"
+                     update="studentForm"/>
+    <br/><br/>
+
+    <p:dialog id="studentDialog" global="true" header="#{msg['studentDialog.header']}" widgetVar="studentDialog" modal="true" height="200"
+              closable="false" resizable="false" >
+        <h:form id="studentForm" >
+            <p:inputText id="studentId" type="hidden" value="#{sampleBean.item.id}"/>
+            <component:myComponent id="firstName" value="#{sampleBean.item.firstName}"
+                                   label="#{msg['studentDialog.form.label.firstName']}"
+                                   title="#{msg['studentDialog.form.firstName.tooltip']}"/>
+            <my:input id="lastName" value="#{sampleBean.item.lastName}"
+                      label="#{msg['studentDialog.form.label.lastName']}"
+                      title="#{msg['studentDialog.form.lastName.tooltip']}"/>
+            <my:input type="date" id="birthDate" value="#{sampleBean.item.birthDate}"
+                      label="#{msg['studentDialog.form.label.birthDate']}"
+                      title="#{msg['studentDialog.form.birthDate.tooltip']}"/>
+            <h:panelGrid columns="2" cellpadding="5">
+                <p:commandButton value="#{msg['button.save']}" actionListener="#{sampleBean.save}"
+                                 update="studentForm studentsList"
+                                 oncomplete="hideDialogOnSuccess(args, PF('studentDialog'))"/>
+                <p:commandButton value="#{msg['button.cancel']}" actionListener="#{sampleBean.cancel}"
+                                 update="studentForm" immediate="true" resetValues="true"
+                                 oncomplete="PF('studentDialog').hide()"/>
             </h:panelGrid>
         </h:form>
-        <br/><br/>
+    </p:dialog>
 
-        <p:commandButton value="#{msg['button.label.addStudent']}" type="button" onclick="PF('studentDialog').show()" update="studentForm" />
-        <br/><br/>
+    <h:form id="studentsList">
+        <p:dataTable id="studentsTable" binding="#{table}" value="#{sampleBean.lazyModel}" var="item" paginator="true" rows="10"
+                     paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                     rowsPerPageTemplate="5,10,15" lazy="true"
+                     currentPageReportTemplate="{currentPage} #{msg['studentsTable.pageReport.outOf']} {totalPages}" >
+            <f:facet name="header">
+                <h:outputText value="#{msg['studentsTable.header']}"/>
+            </f:facet>
+            <p:column headerText="#{msg['studentsTable.label.no']}">
+                <h:outputText value="#{table.rowIndex + 1}"/>
+            </p:column>
+            <my:column header="#{msg['studentsTable.label.id']}" field="student_id" value="#{item.id}"/>
+            <my:column header="#{msg['studentsTable.label.firstName']}" field="first_name" value="#{item.firstName}"/>
+            <my:column header="#{msg['studentsTable.label.lastName']}" field="last_name" value="#{item.lastName}"/>
+            <my:column header="#{msg['studentsTable.label.birthDate']}" field="birth_date" value="#{item.birthDate}"/>
+            <p:column>
+                <p:commandButton value="#{msg['button.edit']}" actionListener="#{sampleBean.edit(item.id)}"
+                                 update="studentForm"
+                                 oncomplete="PF('studentDialog').show()">
+                </p:commandButton>
+            </p:column>
+            <p:column>
+                <p:commandButton id="delete" value="#{msg['button.delete']}"
+                                 actionListener="#{sampleBean.delete(item.id)}" update="studentsList">
+                    <p:confirm header="#{msg['confirmation.header']}" message="#{msg['message.delete.confirmation']}"
+                               icon="ui-icon-alert"/>
+                </p:commandButton>
+            </p:column>
+        </p:dataTable>
+    </h:form>
 
-        <p:dialog global="true" header="#{msg['studentDialog.header']}" widgetVar="studentDialog" modal="true" height="200" closable="false" resizable="false" >
-            <h:form id="studentForm">
-                <p:inputText id="studentId" type="hidden" value="#{sampleBean.item.id}" />
-                <h:panelGrid id="studentFormGrid" columns="3" cellpadding="5">
-                    <p:outputLabel for="firstName" value="#{msg['studentDialog.form.label.firstName']}"></p:outputLabel>
-                    <p:inputText id="firstName" value="#{sampleBean.item.firstName}" required="true" title="#{msg['studentDialog.form.firstName.tooltip']}" />
-                    <p:message id="firstNameMessage" for="firstName" />
+    <p:confirmDialog for="delete" global="true" showEffect="fade" hideEffect="fade">
+        <p:commandButton value="#{msg['confirmation.yes']}" type="button" styleClass="ui-confirmdialog-yes"
+                         icon="ui-icon-check"/>
+        <p:commandButton value="#{msg['confirmation.no']}" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+    </p:confirmDialog>
 
-                    <p:outputLabel for="lastName" value="#{msg['studentDialog.form.label.lastName']}"></p:outputLabel>
-                    <p:inputText id="lastName" value="#{sampleBean.item.lastName}" required="true" title="#{msg['studentDialog.form.lastName.tooltip']}" />
-                    <p:message id="lastNameMessage" for="lastName" />
-
-                    <p:outputLabel for="birthDate" value="#{msg['studentDialog.form.label.birthDate']}" />
-                    <p:calendar id="birthDate" binding="#{birthDateComponent}" value="#{sampleBean.item.birthDate}" required="true"
-                                pattern="yyyy-MM-dd" navigator="true" maxdate="#{sampleBean.today}"
-                                validator="calendarValidator" title="#{msg['studentDialog.form.birthDate.tooltip']}">
-                        <f:attribute name="birthDateComponent" value="#{birthDateComponent}" />
-                    </p:calendar>
-                    <p:message id="birthDateMessage" for="birthDate" />
-                </h:panelGrid>
-
-                <p:dialog for="birthDate" modal="true" resizable="false" header="Values" widgetVar="calendarDialog" showEffect="fold" >
-                    <h:outputText value="#{sampleBean.item.birthDate}"/>
-                </p:dialog>
-
-                <h:panelGrid columns="2" cellpadding="5" >
-                    <p:commandButton value="#{msg['button.save']}" actionListener="#{sampleBean.save}" update="studentForm studentsList"
-                                     oncomplete="hideDialogOnSuccess(args, PF('studentDialog')) " />
-                    <p:commandButton value="#{msg['button.cancel']}" actionListener="#{sampleBean.cancel}" update="studentForm" immediate="true" resetValues="true"
-                                     oncomplete="PF('studentDialog').hide()" />
-                </h:panelGrid>
-            </h:form>
-        </p:dialog>
-
-        <h:form id="studentsList" >
-            <p:dataTable id="studentsTable" binding="#{table}" value="#{sampleBean.lazyModel}" var="item" paginator="true" rows="10"
-                         paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-                         rowsPerPageTemplate="5,10,15" lazy="true" >
-                <p:column headerText="#{msg['studentsTable.label.no']}" >
-                        <h:outputText value="#{table.rowIndex + 1}" />
-                </p:column>
-                <p:column headerText="#{msg['studentsTable.label.id']}" sortBy="#{item.id}" field="student_id" filterStyle="display:none">
-                    <h:outputText value="#{item.id}" />
-                </p:column>
-                <p:column headerText="#{msg['studentsTable.label.firstName']}" sortBy="#{item.firstName}" field="first_name" filterStyle="display:none">
-                    <h:outputText value="#{item.firstName}" />
-                </p:column>
-                <p:column headerText="#{msg['studentsTable.label.lastName']}" sortBy="#{item.lastName}" field="last_name" filterStyle="display:none">
-                    <h:outputText value="#{item.lastName}" />
-                </p:column>
-                <p:column headerText="#{msg['studentsTable.label.birthDate']}" sortBy="#{item.birthDate}" field="birth_date" filterStyle="display:none">
-                    <h:outputText value="#{item.birthDate}" />
-                </p:column>
-                <p:column>
-                    <p:commandButton value="#{msg['button.edit']}" actionListener="#{sampleBean.edit(item.id)}" update="studentForm"
-                                     oncomplete="PF('studentDialog').show()">
-                    </p:commandButton>
-                </p:column>
-                <p:column>
-                    <p:commandButton id="delete" value="#{msg['button.delete']}" actionListener="#{sampleBean.delete(item.id)}" update="studentsList" >
-                        <p:confirm header="#{msg['confirmation.header']}" message="#{msg['message.delete.confirmation']}" icon="ui-icon-alert" />
-                    </p:commandButton>
-                </p:column>
-            </p:dataTable>
-        </h:form>
-
-        <p:confirmDialog for="delete" global="true" showEffect="fade" hideEffect="fade">
-            <p:commandButton value="#{msg['confirmation.yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-            <p:commandButton value="#{msg['confirmation.no']}" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-        </p:confirmDialog>
-
-    </h:body>
+</h:body>
 </html>

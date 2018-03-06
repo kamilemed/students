@@ -3,6 +3,7 @@ package firstcrud;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import java.io.Serializable;
@@ -11,7 +12,7 @@ import java.util.Locale;
 import java.util.Map;
 
 @ManagedBean
-@RequestScoped
+@ViewScoped
 public class LanguageBean implements Serializable {
     private static final long serialVersionUID = 1L;
 

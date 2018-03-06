@@ -15,6 +15,8 @@ import java.util.*;
 public class SampleBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    String test = "test";
+
 //    private static StudentDao studentDao = new StudentDaoInMemoryImpl();
     private StudentDao studentDao = new StudentDaoDatabaseImpl();
     private Student item;
@@ -77,5 +79,17 @@ public class SampleBean implements Serializable {
 
     public Date getToday() {
         return new Date();
+    }
+
+    public void updateTest() {
+        this.test += test;
+    }
+
+    public String getTest() {
+        return test;
+    }
+
+    public void setTest(String test) {
+        this.test = test;
     }
 }

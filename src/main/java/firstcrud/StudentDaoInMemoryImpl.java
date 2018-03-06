@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StudentDaoInMemoryImpl implements StudentDao{
+public class StudentDaoInMemoryImpl implements StudentDao {
     private static List<Student> list = new ArrayList<>();
 
     @Override
